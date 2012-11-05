@@ -1,0 +1,54 @@
+#!/usr/bin/env sh
+#
+
+Colors() {
+  Escape="\033";
+  BlackF="${Escape}[30m";   RedF="${Escape}[31m";   GreenF="${Escape}[32m"; YellowF="${Escape}[33m";  BlueF="${Escape}[34m";  Purplef="${Escape}[35m"; CyanF="${Escape}[36m";  WhiteF="${Escape}[37m"; 
+  Reset="${Escape}[0m";
+}
+Colors;
+
+
+path=$(pwd)
+echo $path
+
+if [ -d cnf ] ; then
+  echo "Removing existing cnf directory...";
+  rm -rf cnf;
+fi
+mkdir "cnf"
+
+cp skeleton/settings.php cnf/settings.php
+
+file="settings.php"
+
+search="%DBNAME%"
+replace="test"
+
+echo "Database Name: "
+read -e DB_NAME
+sed -e "s,%DB_NAME%,$DB_NAME,g" cnf/$file > cnf/tmp_$file; mv cnf/tmp_$file cnf/$file
+
+echo "Database User: "
+read -e DB_USER
+sed -e "s,%DBNAME%,$DB_USER,g" cnf/$file > cnf/tmp_$file; mv cnf/tmp_$file cnf/$file
+
+echo "Database Password: "
+read -e DB_PASS
+sed -e "s,%DB_PASSWORD%,$DB_PASSWORD,g" cnf/$file > cnf/tmp_$file; mv cnf/tmp_$file cnf/$file
+
+echo "Domain current site: "
+read -e DB_PASS
+sed -e "s,%DB_PASSWORD%,$DB_PASSWORD,g" cnf/$file > cnf/tmp_$file; mv cnf/tmp_$file cnf/$file
+
+if [ -d httpdocs ] ; then
+  echo "Removing existing httpdocs directory...";
+  rm -rf httpdocs;
+fi
+mkdir "httpdocs"
+
+cd httpdocs
+wp core download
+cd ..
+
+cp skeleton/wp-config.php httpdocs/wp-config.php
